@@ -35,7 +35,7 @@ This project includes various features, such as:
 
 You need to compile the files yourself.
 ```bash
-git clone git@github.com:Sung-Jinw00/Codewars.git Codewars
+git clone git@github.com:Louis-Cagnion/Codewars.git Codewars
 cd Codewars
 ```
 
