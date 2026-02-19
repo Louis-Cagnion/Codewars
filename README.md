@@ -43,4 +43,4 @@ cd Codewars
 
 ## 🧑‍💻 Author <a id="author"></a>
 
-Created and maintained by @Sung_Jinw00
+Created and maintained by @Louis-Cagnion
