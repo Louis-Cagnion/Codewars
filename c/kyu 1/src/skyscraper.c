@@ -28,9 +28,15 @@ int **SolvePuzzle(int *clues)
 		return (NULL);
 
 	//init the boards of available numbers
-	int available_nbs[N][N][N] = {0}, **solution = init_solution();
+	int available_nbs[N][N][N] = {0}, solution[N][N] = {0};
 	init_availability(available_nbs);
 	put_towers_deduced(available_nbs, solution, clues);
 	//return the solution
-	return (backtracking_solve(available_nbs, solution, clues, 0));
+	if (!backtracking_solve(available_nbs, solution, clues, 0))
+		return NULL;
+	int **result = init_solution();
+	for (int line = 0; line < N; line++)
+		for (int col = 0; col < N; col++)
+			result[line][col] = solution[line][col];
+	return result;
 }

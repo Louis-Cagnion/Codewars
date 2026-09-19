@@ -79,17 +79,17 @@ int **SolvePuzzle(int *clues);
 // Backtracking
 //─────────────────────────────
 
-int		**backtracking_solve(int available_nbs[N][N][N], int **solution, int *clues, int depth);
+bool	backtracking_solve(int available_nbs[N][N][N], int solution[N][N], int *clues, int depth);
 
 //─────────────────────────────
 // Backtracking Utils
 //─────────────────────────────
 
-bool	empty_box(int **solution);
-void	sol_dup(int **solution_dup, int **solution);
-bool	clues_respected(int *clues, int **solution);
-bool	prefix_respects_clues(int *clues, int **solution);
-void	empty_box_coords(int **solution, int available_nbs[N][N][N], int *line, int *col);
+bool	empty_box(int solution[N][N]);
+void	sol_dup(int solution_dup[N][N], int solution[N][N]);
+bool	clues_respected(int *clues, int solution[N][N]);
+bool	prefix_respects_clues(int *clues, int solution[N][N]);
+void	empty_box_coords(int solution[N][N], int available_nbs[N][N][N], int *line, int *col);
 void	available_dup(int available_nbs_dup[N][N][N], int available_nbs[N][N][N]);
 int		highest_available(int available_nbs[N][N][N], int line, int col, int start);
 
@@ -97,15 +97,15 @@ int		highest_available(int available_nbs[N][N][N], int line, int col, int start)
 // Deduction
 //─────────────────────────────
 
-void    put_towers_deduced(int available_nbs[N][N][N], int **solution, int *clues);
-void	actualise_max_clue(int cur_clue, int available_nbs[N][N][N], int **solution);
+void    put_towers_deduced(int available_nbs[N][N][N], int solution[N][N], int *clues);
+void	actualise_max_clue(int cur_clue, int available_nbs[N][N][N], int solution[N][N]);
 
 
 //─────────────────────────────
 // Actualise solution
 //─────────────────────────────
 
-void	set_valid_pos(int nb, int line, int col, int available_nbs[N][N][N], int **solution);
+void	set_valid_pos(int nb, int line, int col, int available_nbs[N][N][N], int solution[N][N]);
 
 //─────────────────────────────
 // Print
@@ -134,7 +134,7 @@ void	free_array2(int **arr2);
 int		**wrapped_array(int static_array[N][N]);
 void	init_availability(int available_nbs[N][N][N]);
 bool	compare_solution(int **solution, int expected[N][N]);
-int		visible_towers(Direction way, int line, int col, int **solution);
-int		visible_towers_prefix(Direction way, int line, int col, int **solution);
+int		visible_towers(Direction way, int line, int col, int solution[N][N]);
+int		visible_towers_prefix(Direction way, int line, int col, int solution[N][N]);
 
 #endif

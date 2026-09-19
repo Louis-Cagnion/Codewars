@@ -60,7 +60,7 @@ int	left_cond_nb(int line)
 /**
  * @return The column in line if nb has been found, else return -1
  */
-int	is_nb_on_line(int nb, int line, int **solution)
+int	is_nb_on_line(int nb, int line, int solution[N][N])
 {
 	for (int col = 0; col < N; col++)
 		if (solution[line][col] == nb)
@@ -71,7 +71,7 @@ int	is_nb_on_line(int nb, int line, int **solution)
 /**
  * @return The line in column if nb has been found, else return -1
  */
-int	is_nb_on_col(int nb, int col, int **solution)
+int	is_nb_on_col(int nb, int col, int solution[N][N])
 {
 	for (int line = 0; line < N; line++)
 		if (solution[line][col] == nb)
@@ -90,7 +90,7 @@ int	is_nb_on_col(int nb, int col, int **solution)
  * 
  * @return `true` if there's one missing nb, else return `false`
  */
-bool	lacking_towers(Direction way, int line, int col, int **solution)
+bool	lacking_towers(Direction way, int line, int col, int solution[N][N])
 {
 	if (way == LTR)
 	{
@@ -130,7 +130,7 @@ bool	lacking_towers(Direction way, int line, int col, int **solution)
  * 
  * @return the amount of empty boxes before N
  */
-int	empty_boxes_until_N(Direction way, int line, int col, int **solution)
+int	empty_boxes_until_N(Direction way, int line, int col, int solution[N][N])
 {
 	if (((way == BTT || way == TTB) && is_nb_on_col(N, col, solution) == -1)
 		|| ((way == RTL || way == LTR) && is_nb_on_line(N, line, solution) == -1))
@@ -184,7 +184,7 @@ int	empty_boxes_until_N(Direction way, int line, int col, int **solution)
  *
  * @return the amount of visible towers among the filled prefix
  */
-int	visible_towers_prefix(Direction way, int line, int col, int **solution)
+int	visible_towers_prefix(Direction way, int line, int col, int solution[N][N])
 {
 	int towers_recorded = 0;
 	int prev_tower = 0;
@@ -246,7 +246,7 @@ int	visible_towers_prefix(Direction way, int line, int col, int **solution)
  * 
  * @return the amount of visible towers
  */
-int	visible_towers(Direction way, int line, int col, int **solution)
+int	visible_towers(Direction way, int line, int col, int solution[N][N])
 {
 	if (((way == BTT || way == TTB) && is_nb_on_col(N, col, solution) == -1)
 		|| ((way == RTL || way == LTR) && is_nb_on_line(N, line, solution) == -1))
@@ -312,7 +312,7 @@ int	visible_towers(Direction way, int line, int col, int **solution)
  *
  * @return `true` if every box up to the edge is filled, else `false`
  */
-bool	last_boxs_are_filled(Direction way, int **solution, int line, int col)
+bool	last_boxs_are_filled(Direction way, int solution[N][N], int line, int col)
 {
 	if (way == LTR)
 	{
@@ -354,7 +354,7 @@ bool	last_boxs_are_filled(Direction way, int **solution, int line, int col)
  *
  * @return `true` if every box before (line, col) is still empty, else `false`
  */
-bool	last_boxs_arent_filled(Direction way, int **solution, int line, int col)
+bool	last_boxs_arent_filled(Direction way, int solution[N][N], int line, int col)
 {
 	if (way == LTR)
 	{
@@ -459,7 +459,7 @@ int	**init_solution(void)
  * @param available_nbs	the array of possible numbers
  * @param solution		the solution board
  */
-void	set_valid_pos(int nb, int line, int col, int available_nbs[N][N][N], int **solution)
+void	set_valid_pos(int nb, int line, int col, int available_nbs[N][N][N], int solution[N][N])
 {
 	//put the number in the solution board
 	solution[line][col] = nb--;//decrease for right increment in available nbs

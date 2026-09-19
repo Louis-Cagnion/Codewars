@@ -14,7 +14,7 @@
  * @param line          Output: the row of the chosen box, or -1 if the grid is full
  * @param col           Output: the column of the chosen box, or -1 if the grid is full
  */
-void	empty_box_coords(int **solution, int available_nbs[N][N][N], int *line, int *col)
+void	empty_box_coords(int solution[N][N], int available_nbs[N][N][N], int *line, int *col)
 {
 	int best_line = -1;
 	int best_col = -1;
@@ -66,7 +66,7 @@ int highest_available(int available_nbs[N][N][N], int line, int col, int start)
  * @param solution_dup The destination grid, already allocated
  * @param solution     The source grid
  */
-void sol_dup(int **solution_dup, int **solution)
+void sol_dup(int solution_dup[N][N], int solution[N][N])
 {
 	for (int line = 0; line < N; line++)
 		for (int col = 0; col < N; col++)
@@ -107,7 +107,7 @@ void available_dup(int available_nbs_dup[N][N][N], int available_nbs[N][N][N])
  *
  * @return `false` if some clue is already exceeded, `true` otherwise
  */
-bool	prefix_respects_clues(int *clues, int **solution)
+bool	prefix_respects_clues(int *clues, int solution[N][N])
 {
 	for (int i = 0; i < N * 4; i++)
 	{
@@ -133,7 +133,7 @@ bool	prefix_respects_clues(int *clues, int **solution)
  *
  * @return `true` if every clue matches, else `false`
  */
-bool	clues_respected(int *clues, int **solution)
+bool	clues_respected(int *clues, int solution[N][N])
 {
 	for (int i = 0; i < N * 4; i++)
 	{
@@ -154,7 +154,7 @@ bool	clues_respected(int *clues, int **solution)
  *
  * @return `true` if at least one box is still empty, else `false`
  */
-bool empty_box(int **solution)
+bool empty_box(int solution[N][N])
 {
 	for (int line = N - 1; line >= 0; line--)
 	{

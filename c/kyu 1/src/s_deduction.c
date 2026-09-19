@@ -12,7 +12,7 @@
  * @param solution      The solution grid
  * @param clues         The array of clues
  */
-void	opposite_clues(int cur_clue, int available_nbs[N][N][N], int **solution, int *clues)
+void	opposite_clues(int cur_clue, int available_nbs[N][N][N], int solution[N][N], int *clues)
 {
 	int f_clue = clues[cur_clue], s_clue, line = 0, col = 0;
 
@@ -42,7 +42,7 @@ void	opposite_clues(int cur_clue, int available_nbs[N][N][N], int **solution, in
  * @param available_nbs the array of possible numbers
  * @param solution      The solution grid
  */
-void	actualise_min_clue(int cur_clue, int available_nbs[N][N][N], int **solution)
+void	actualise_min_clue(int cur_clue, int available_nbs[N][N][N], int solution[N][N])
 {
 	int way = cur_clue / N;// to know on which side the clue is
 
@@ -67,7 +67,7 @@ void	actualise_min_clue(int cur_clue, int available_nbs[N][N][N], int **solution
  * @param available_nbs the array of possible numbers
  * @param solution      The solution grid
  */
-void	actualise_max_clue(int cur_clue, int available_nbs[N][N][N], int **solution)
+void	actualise_max_clue(int cur_clue, int available_nbs[N][N][N], int solution[N][N])
 {
 	int way = cur_clue / N;// to know on which side the clue is
 	/* {upper clue, right clue, lower clue, left clue} */
@@ -178,7 +178,7 @@ void	reduce_possibilities_from_clues(int available_nbs[N][N][N], int *clues)
  * @param solution      The solution grid
  * @param clues         The array of clues
  */
-void    put_towers_deduced(int available_nbs[N][N][N], int **solution, int *clues)
+void    put_towers_deduced(int available_nbs[N][N][N], int solution[N][N], int *clues)
 {
 	reduce_possibilities_from_clues(available_nbs, clues);
 	for (int i = 0; i < N * 4; i++)
