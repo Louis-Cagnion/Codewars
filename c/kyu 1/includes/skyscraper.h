@@ -12,7 +12,7 @@
 // Defines
 //─────────────────────────────
 
-# define  N  6
+# define  N  7
 extern int (*expe)[N];
 
 # ifndef RESET
