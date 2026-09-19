@@ -7,11 +7,11 @@
  * 
  * @return the smallest possible number in a box
  */
-int	min_possibility(int available_nbs[N][N][N], int line, int col)
+int	min_possibility(int available_nbs[N][N], int line, int col)
 {
 	for (int nb = 0; nb < N; nb++)
-		if (available_nbs[nb][line][col])
-			return available_nbs[nb][line][col];
+		if (available_nbs[line][col])
+			return available_nbs[line][col];
 	return -1;
 }
 
@@ -162,6 +162,49 @@ int	empty_boxes_until_N(Direction way, int line, int col, int solution[N][N])
 				empty_boxes++;
 	}
 	return (empty_boxes);
+}
+
+/**
+ * @brief
+ * Find the highest value seen on the filled prefix of a line or column,
+ * starting from the clue's side and stopping at the first empty box.
+ *
+ * Pairs with @ref visible_towers_prefix and @ref prefix_length to compute a
+ * tighter upper bound on the final visible-tower count: since every further
+ * record must strictly exceed this value, at most `N` minus this value more
+ * records can ever occur, regardless of how many boxes remain empty.
+ *
+ * @param way		The reading way, of type @ref Direction
+ * @param solution	The array of solution
+ * @param line		The line in the `solution`
+ * @param col		The column in the `solution`
+ *
+ * @return the highest value on the filled prefix, or 0 if it is empty
+ */
+int	prefix_max(Direction way, int line, int col, int solution[N][N])
+{
+	int highest_tower = 0;
+	if (way == LTR) {
+		for (col = 0; col < N && solution[line][col]; col++)
+			if (solution[line][col] > highest_tower)
+				highest_tower = solution[line][col];
+	}
+	else if (way == RTL) {
+		for (col = N - 1; col >= 0 && solution[line][col]; col--)
+			if (solution[line][col] > highest_tower)
+				highest_tower = solution[line][col];
+	}
+	else if (way == TTB) {
+		for (line = 0; line < N && solution[line][col]; line++)
+			if (solution[line][col] > highest_tower)
+				highest_tower = solution[line][col];
+	}
+	else {
+		for (line = N - 1; line >= 0 && solution[line][col]; line--)
+			if (solution[line][col] > highest_tower)
+				highest_tower = solution[line][col];
+	}
+	return (highest_tower);
 }
 
 /**
@@ -428,10 +471,10 @@ bool	last_boxs_arent_filled(Direction way, int solution[N][N], int line, int col
  * 
  * @return the number if he exist, else 0
  */
-int	tiniest_nb_in_box(int available_nbs[N][N][N], int start_nb, int line, int col)
+int	tiniest_nb_in_box(int available_nbs[N][N], int start_nb, int line, int col)
 {
 	for (int nb = start_nb; nb < N; nb++)
-		if (available_nbs[nb][line][col])
+		if (available_nbs[line][col])
 			return (nb + 1);//cf init vailability below
 	return (0);
 }
@@ -454,19 +497,11 @@ int	tiniest_nb_in_box(int available_nbs[N][N][N], int start_nb, int line, int co
  * @return
  * The array of arrays of arrays of ints.
  */
-void	init_availability(int available_nbs[N][N][N])
+void	init_availability(int available_nbs[N][N])
 {
-	//first int in the numbers placable
-	for (int nb = 0; nb < N; nb++)
-	{
-		//second int is lines
-		for (int line = 0; line < N; line++)
-		{
-			//third line is columns
-			for (int column = 0; column < N; column++)
-				available_nbs[nb][line][column] = nb + 1;//nb starts at zero
-		}
-	}
+	for (int line = 0; line < N; line++)
+		for (int column = 0; column < N; column++)
+			available_nbs[line][column] = (1 << N) - 1;// all bits at 1 = all is possible
 }
 
 /**
@@ -493,18 +528,17 @@ int	**init_solution(void)
  * @param available_nbs	the array of possible numbers
  * @param solution		the solution board
  */
-void	set_valid_pos(int nb, int line, int col, int available_nbs[N][N][N], int solution[N][N])
+void	set_valid_pos(int nb, int line, int col, int available_nbs[N][N], int solution[N][N])
 {
 	//put the number in the solution board
 	solution[line][col] = nb--;//decrease for right increment in available nbs
-	for (int col_inc = 0, line_inc = 0, nb_inc = 0; col_inc < N; col_inc++, line_inc++, nb_inc++)
+	for (int col_inc = 0, line_inc = 0; col_inc < N; col_inc++, line_inc++)
 	{
+		available_nbs[line][col] = 0;
 		if (col_inc != col)//set every other box on the same column to zero
-			available_nbs[nb][line][col_inc] = 0;
+			available_nbs[line][col_inc] &= ~(1 << nb);
 		if (line_inc != line)//set every other box on the same line to zero
-			available_nbs[nb][line_inc][col] = 0;
-		if (nb_inc != nb)//remove every other numbers in the possibilities at this position
-			available_nbs[nb_inc][line][col] = 0;
+			available_nbs[line_inc][col] &= ~(1 << nb);
 	}
 }
 

@@ -19,7 +19,7 @@
  * @return `true` if `solution` was filled with a valid answer, `false` if
  * no solution exists from this state
  */
-bool	backtracking_solve(int available_nbs[N][N][N], int solution[N][N], int *clues, int depth)
+bool	backtracking_solve(int available_nbs[N][N], int solution[N][N], int *clues, int depth)
 {
 	if (depth >= N * N)//avoid going too deep in the research
 		return true;
@@ -30,7 +30,7 @@ bool	backtracking_solve(int available_nbs[N][N][N], int solution[N][N], int *clu
 	if (line == -1 && col == -1)//if no empty box and clues are respected
 		return clues_respected(clues, solution);//solution found
 
-	int available_nbs_dup[N][N][N], solution_dup[N][N], nb_try = N + 1;//set nb to try to the highest one
+	int available_nbs_dup[N][N], solution_dup[N][N], nb_try = N + 1;//set nb to try to the highest one
 	while (nb_try > 0)//while i have a number to place
 	{
 		sol_dup(solution_dup, solution);//dup solution

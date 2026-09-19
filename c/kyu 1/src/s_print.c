@@ -280,7 +280,7 @@ void	print_array(int array[N][N], int nb, int clues[N * 4])
  * @param clues           The array of clues
  * @param solution        The current solution grid
  */
-void	print_all_available_each_box(int available_nbs[N][N][N], int clues[N * 4], int **solution)
+void	print_all_available_each_box(int available_nbs[N][N], int clues[N * 4], int **solution)
 {
 	if (!solution || !available_nbs || !available_nbs[0])//can't print without solution or available nbs
 	{
@@ -311,7 +311,7 @@ void	print_all_available_each_box(int available_nbs[N][N][N], int clues[N * 4], 
 		{
 			for (j = 0; j < 3; j++)
 			{
-				if (!solution[i][k] && j < N && (possibility = available_nbs[j][i][k]))//if no solution and 1,2 or 3 is available
+				if (!solution[i][k] && j < N && (possibility = available_nbs[i][k] & (1 << j)))//if no solution and 1,2 or 3 is available
 					fprintf(stderr, " %d", possibility);//i print
 				else
 					fprintf(stderr, "  ");//else, blank
@@ -334,7 +334,7 @@ void	print_all_available_each_box(int available_nbs[N][N][N], int clues[N * 4], 
 					fprintf(stderr, "%s   %d  "RESET, color, solution[i][k]);
 					break ;
 				}	
-				if (j < N && (possibility = available_nbs[j][i][k]))//else if 4, 5 or 6 is available
+				if (j < N && (possibility = available_nbs[i][k] & (1 << j)))//else if 4, 5 or 6 is available
 					fprintf(stderr, " %d", possibility);//i print
 				else
 					fprintf(stderr, "  ");//else, blank
@@ -350,7 +350,7 @@ void	print_all_available_each_box(int available_nbs[N][N][N], int clues[N * 4], 
 		{
 			for (j = 6; j < 9; j++)
 			{
-				if (!solution[i][k] && j < N && (possibility = available_nbs[j][i][k]))//if 7, 8 or 9 is available
+				if (!solution[i][k] && j < N && (possibility = available_nbs[i][k] & (1 << j)))//if 7, 8 or 9 is available
 					fprintf(stderr, " %d", possibility);//i print
 				else
 					fprintf(stderr, "  ");//else, blank
@@ -384,10 +384,10 @@ void	print_all_available_each_box(int available_nbs[N][N][N], int clues[N * 4], 
  * @param available_nbs   the array of possible numbers
  * @param clues           The array of clues
  */
-void	print_all_nb_arrays(int available_nbs[N][N][N], int clues[N * 4])
+void	print_all_nb_arrays(int available_nbs[N][N], int clues[N * 4])
 {
 	for (int nb = 0; nb < N; nb++)
-		print_array(available_nbs[nb], nb, clues);
+		print_array(available_nbs, nb, clues);
 }
 
 /**

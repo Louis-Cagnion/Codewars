@@ -14,7 +14,7 @@
  * @param line          Output: the row of the chosen box, or -1 if the grid is full
  * @param col           Output: the column of the chosen box, or -1 if the grid is full
  */
-void	empty_box_coords(int solution[N][N], int available_nbs[N][N][N], int *line, int *col)
+void	empty_box_coords(int solution[N][N], int available_nbs[N][N], int *line, int *col)
 {
 	int best_line = -1;
 	int best_col = -1;
@@ -25,10 +25,7 @@ void	empty_box_coords(int solution[N][N], int available_nbs[N][N][N], int *line,
 		for (*col = 0; *col < N && best_count; (*col)++) {
 			if (solution[*line][*col])
 				continue;
-			int count = 0;
-			for (int nb = 0; nb < N; nb++)
-				if (available_nbs[nb][*line][*col])
-					count += 1;
+			int count = __builtin_popcount(available_nbs[*line][*col]);
 			if (count < best_count) {
 				best_count = count;
 				best_line = *line;
@@ -51,11 +48,12 @@ void	empty_box_coords(int solution[N][N], int available_nbs[N][N][N], int *line,
  *
  * @return the highest available value `<= start`, or 0 if none is available
  */
-int highest_available(int available_nbs[N][N][N], int line, int col, int start)
+int highest_available(int available_nbs[N][N], int line, int col, int start)
 {
-	for (int nb = start; nb > 0; nb--)
-		if (available_nbs[nb - 1][line][col])
-			return available_nbs[nb - 1][line][col];
+	int mask = available_nbs[line][col] & ((1 << start) - 1);
+	for (int nb = start; mask && start > 0; nb--)
+		if (mask & (1 << (nb - 1)))
+			return nb;
 	return 0;
 }
 
@@ -80,14 +78,11 @@ void sol_dup(int solution_dup[N][N], int solution[N][N])
  * @param available_nbs_dup The destination array
  * @param available_nbs     The source array
  */
-void available_dup(int available_nbs_dup[N][N][N], int available_nbs[N][N][N])
+void available_dup(int available_nbs_dup[N][N], int available_nbs[N][N])
 {
-	for (int nb = 0; nb < N; nb++)
-	{
 		for (int line = 0; line < N; line++)
 			for (int col = 0; col < N; col++)
-				available_nbs_dup[nb][line][col] = available_nbs[nb][line][col];
-	}
+				available_nbs_dup[line][col] = available_nbs[line][col];
 }
 
 /**
@@ -98,11 +93,13 @@ void available_dup(int available_nbs_dup[N][N][N], int available_nbs[N][N][N])
  * Unlike @ref clues_respected, this can be called on a partially filled grid.
  * For each clue it computes two bounds on the final visible-tower count:
  * a lower bound from the filled prefix (@ref visible_towers_prefix, which
- * can only grow as more boxes get filled), and an upper bound obtained by
- * optimistically assuming every still-empty box on that line or column
- * (@ref prefix_length) turns out to be a new record. The clue is rejected
- * as soon as it falls outside that range — either already exceeded, or no
- * longer reachable even in the best case. A `true` result does not mean the
+ * can only grow as more boxes get filled), and an upper bound that is the
+ * smaller of two limits: how many boxes are still empty (@ref prefix_length)
+ * and how many values above the highest one seen so far still fit under `N`
+ * (@ref prefix_max) — a further record can never repeat or fall below a
+ * value already seen. The clue is rejected as soon as it falls outside that
+ * range — either already exceeded, or no longer reachable even in the best
+ * case. A `true` result does not mean the
  * grid is a valid solution, only that nothing filled in so far rules it out
  * yet — meant to prune a branch during backtracking before it reaches a
  * fully filled, and much more expensive to check, grid.
@@ -132,9 +129,12 @@ bool	prefix_respects_clues(int *clues, int solution[N][N])
         else {
             way = LTR ; line = left_cond_nb(i) ; col = 0;
 		}
-		int visible = visible_towers_prefix(way, line, col, solution);
-		int empty_boxes = N - prefix_length(way, line, col, solution);
-		if (clues[i] < visible || clues[i] > visible + empty_boxes)
+		int visible = visible_towers_prefix(way, line, col, solution),
+			empty_boxes = N - prefix_length(way, line, col, solution),
+			max_seen = prefix_max(way, line, col, solution),
+			headroom = N - max_seen,	
+			high_born = visible + (empty_boxes < headroom ? empty_boxes : headroom);
+		if (clues[i] < visible || clues[i] > high_born)
 			return false;
 	}
 	return true;

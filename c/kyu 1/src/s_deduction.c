@@ -12,7 +12,7 @@
  * @param solution      The solution grid
  * @param clues         The array of clues
  */
-void	opposite_clues(int cur_clue, int available_nbs[N][N][N], int solution[N][N], int *clues)
+void	opposite_clues(int cur_clue, int available_nbs[N][N], int solution[N][N], int *clues)
 {
 	int f_clue = clues[cur_clue], s_clue, line = 0, col = 0;
 
@@ -42,7 +42,7 @@ void	opposite_clues(int cur_clue, int available_nbs[N][N][N], int solution[N][N]
  * @param available_nbs the array of possible numbers
  * @param solution      The solution grid
  */
-void	actualise_min_clue(int cur_clue, int available_nbs[N][N][N], int solution[N][N])
+void	actualise_min_clue(int cur_clue, int available_nbs[N][N], int solution[N][N])
 {
 	int way = cur_clue / N;// to know on which side the clue is
 
@@ -67,7 +67,7 @@ void	actualise_min_clue(int cur_clue, int available_nbs[N][N][N], int solution[N
  * @param available_nbs the array of possible numbers
  * @param solution      The solution grid
  */
-void	actualise_max_clue(int cur_clue, int available_nbs[N][N][N], int solution[N][N])
+void	actualise_max_clue(int cur_clue, int available_nbs[N][N], int solution[N][N])
 {
 	int way = cur_clue / N;// to know on which side the clue is
 	/* {upper clue, right clue, lower clue, left clue} */
@@ -105,7 +105,7 @@ void	actualise_max_clue(int cur_clue, int available_nbs[N][N][N], int solution[N
  * @param available_nbs The array of possible numbers
  * @param clues         The array of clues
  */
-void	reduce_possibilities_from_clues(int available_nbs[N][N][N], int *clues)
+void	reduce_possibilities_from_clues(int available_nbs[N][N], int *clues)
 {
 	int	limit;
 
@@ -121,7 +121,10 @@ void	reduce_possibilities_from_clues(int available_nbs[N][N][N], int *clues)
 				{
 					int inc = 0;
 					while (limit + inc < N)
-						available_nbs[limit + inc++][line][top_cond_nb(i)] = 0;//i remove every number above the limit
+					{
+						available_nbs[line][top_cond_nb(i)] &= ~(1 << (limit + inc));
+						inc++;
+					}
 					line++;//i go to the next line
 					limit++;//i remove numbers above limit + 1 on the next box to keep the visibility of towers according to the clue
 				}
@@ -133,7 +136,10 @@ void	reduce_possibilities_from_clues(int available_nbs[N][N][N], int *clues)
 				{
 					int inc = 0;
 					while (limit + inc < N)
-						available_nbs[limit + inc++][right_cond_nb(i)][col] = 0;//i remove every number above the limit
+					{
+						available_nbs[right_cond_nb(i)][col] &= ~(1 << (limit + inc));
+						inc++;
+					}
 					col--;//i go to the next column
 					limit++;//same
 				}
@@ -145,7 +151,10 @@ void	reduce_possibilities_from_clues(int available_nbs[N][N][N], int *clues)
 				{
 					int inc = 0;
 					while (limit + inc < N)
-						available_nbs[limit + inc++][line][bottom_cond_nb(i)] = 0;//i remove every number above the limit
+					{
+						available_nbs[line][bottom_cond_nb(i)] &= ~(1 << (limit + inc));
+						inc++;
+					}
 					line--;//i go to the next line
 					limit++;//same
 				}
@@ -157,7 +166,10 @@ void	reduce_possibilities_from_clues(int available_nbs[N][N][N], int *clues)
 				{
 					int inc = 0;
 					while (limit + inc < N)
-						available_nbs[limit + inc++][left_cond_nb(i)][col] = 0;//i remove every number above the limit
+					{
+						available_nbs[left_cond_nb(i)][col] &= ~(1 << (limit + inc));
+						inc++;
+					}
 					col++;//i go to the next col
 					limit++;//same
 				}
@@ -178,7 +190,7 @@ void	reduce_possibilities_from_clues(int available_nbs[N][N][N], int *clues)
  * @param solution      The solution grid
  * @param clues         The array of clues
  */
-void    put_towers_deduced(int available_nbs[N][N][N], int solution[N][N], int *clues)
+void    put_towers_deduced(int available_nbs[N][N], int solution[N][N], int *clues)
 {
 	reduce_possibilities_from_clues(available_nbs, clues);
 	for (int i = 0; i < N * 4; i++)
