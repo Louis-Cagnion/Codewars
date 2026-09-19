@@ -4,14 +4,20 @@
  * @brief
  * Solve the skyscraper puzzle using backtracking.
  *
- * The current solution is saved before attempting recursive resolution.
+ * Tries candidate values for the most constrained empty box (see @ref
+ * empty_box_coords) from highest to lowest, on a scratch copy of `solution`
+ * and `available_nbs`, pruning a candidate as soon as @ref
+ * prefix_respects_clues rejects it. On success, the answer is copied back
+ * into `solution` (the caller's own grid, mutated in place) before
+ * returning — nothing is allocated or freed anywhere in this function.
  *
  * @param available_nbs the array of possible numbers
- * @param solution      The solution grid
+ * @param solution      The solution grid, filled in place on success
  * @param clues         The array of clues
  * @param depth         The level of depth in my recursivity
  *
- * @return The solved grid or NULL if no solutions was found
+ * @return `true` if `solution` was filled with a valid answer, `false` if
+ * no solution exists from this state
  */
 bool	backtracking_solve(int available_nbs[N][N][N], int solution[N][N], int *clues, int depth)
 {

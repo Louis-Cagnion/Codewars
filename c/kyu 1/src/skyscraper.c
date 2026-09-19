@@ -4,22 +4,26 @@
  * @brief
  * Entry point of the skyscraper puzzle solver.
  *
- * This function initializes all required data structures:
- * 
- * - marks empty clues as already fulfilled
- * 
- * - allocates and initializes `available_nbs`
- * 
- * - allocates and initializes the `solution` grid
+ * `available_nbs` and the working `solution` grid live on the stack for the
+ * whole solve, so no allocation happens until a solution is actually found.
+ * This function:
  *
- * It then applies all deterministic deductions before
- * entering the recursive backtracking phase.
+ * - initializes `available_nbs` with every value possible everywhere
+ *
+ * - applies every deterministic deduction from the clues (@ref
+ *   put_towers_deduced)
+ *
+ * - runs the recursive backtracking search (@ref backtracking_solve)
+ *
+ * - on success, copies the stack-based result into a freshly allocated grid,
+ *   the only heap allocation of the whole solve, so the caller can keep it
+ *   after this function returns
  *
  * @param clues  the array of clues surrounding the board
  *
  * @return
  * A dynamically allocated 2D array representing the solution,
- * or `NULL` if `clues` is invalid.
+ * or `NULL` if `clues` is invalid or no solution was found.
  */
 int **SolvePuzzle(int *clues)
 {

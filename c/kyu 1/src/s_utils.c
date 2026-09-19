@@ -166,6 +166,40 @@ int	empty_boxes_until_N(Direction way, int line, int col, int solution[N][N])
 
 /**
  * @brief
+ * Count how many consecutive boxes are already filled in, starting from
+ * the clue's side, before the first still-empty box is reached.
+ *
+ * Pairs with @ref visible_towers_prefix: `N` minus this length gives the
+ * number of still-empty boxes on that line or column, used to compute an
+ * upper bound on the final visible-tower count.
+ *
+ * @param way		The reading way, of type @ref Direction
+ * @param solution	The array of solution
+ * @param line		The line in the `solution`
+ * @param col		The column in the `solution`
+ *
+ * @return the number of consecutive filled boxes from the clue's side
+ */
+int	prefix_length(Direction way, int line, int col, int solution[N][N])
+{
+	int towers_recorded = 0;
+	if (way == LTR)
+		for (col = 0; col < N && solution[line][col]; col++)
+			towers_recorded++;
+	else if (way == RTL)
+		for (col = N - 1; col >= 0 && solution[line][col]; col--)
+			towers_recorded++;
+	else if (way == TTB)
+		for (line = 0; line < N && solution[line][col]; line++)
+			towers_recorded++;
+	else
+		for (line = N - 1; line >= 0 && solution[line][col]; line--)
+			towers_recorded++;
+	return (towers_recorded);
+}
+
+/**
+ * @brief
  * Count the visible towers on the filled prefix of a line or column, starting
  * from the clue's side and stopping at the first empty box encountered.
  *

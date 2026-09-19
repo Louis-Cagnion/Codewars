@@ -136,5 +136,6 @@ void	init_availability(int available_nbs[N][N][N]);
 bool	compare_solution(int **solution, int expected[N][N]);
 int		visible_towers(Direction way, int line, int col, int solution[N][N]);
 int		visible_towers_prefix(Direction way, int line, int col, int solution[N][N]);
+int		prefix_length(Direction way, int line, int col, int solution[N][N]);
 
 #endif

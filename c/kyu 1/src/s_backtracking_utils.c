@@ -92,29 +92,49 @@ void available_dup(int available_nbs_dup[N][N][N], int available_nbs[N][N][N])
 
 /**
  * @brief
- * Check that no clue is already exceeded by what's currently filled in.
+ * Check that no clue has already been exceeded or made unreachable by
+ * what's currently filled in.
  *
- * Unlike @ref clues_respected, this can be called on a partially filled grid:
- * it only rejects a clue once the visible-tower count on its filled prefix
- * (see @ref visible_towers_prefix) has gone strictly above the clue's value,
- * which can only get worse as more boxes are filled in. A `true` result does
- * not mean the grid is a valid solution, only that nothing filled in so far
- * rules it out yet — meant to prune a branch during backtracking before it
- * reaches a fully filled, and much more expensive to check, grid.
+ * Unlike @ref clues_respected, this can be called on a partially filled grid.
+ * For each clue it computes two bounds on the final visible-tower count:
+ * a lower bound from the filled prefix (@ref visible_towers_prefix, which
+ * can only grow as more boxes get filled), and an upper bound obtained by
+ * optimistically assuming every still-empty box on that line or column
+ * (@ref prefix_length) turns out to be a new record. The clue is rejected
+ * as soon as it falls outside that range — either already exceeded, or no
+ * longer reachable even in the best case. A `true` result does not mean the
+ * grid is a valid solution, only that nothing filled in so far rules it out
+ * yet — meant to prune a branch during backtracking before it reaches a
+ * fully filled, and much more expensive to check, grid.
  *
  * @param clues    The array of clues
  * @param solution The (possibly partial) solution grid
  *
- * @return `false` if some clue is already exceeded, `true` otherwise
+ * @return `false` if some clue is already out of reach, `true` otherwise
  */
 bool	prefix_respects_clues(int *clues, int solution[N][N])
 {
 	for (int i = 0; i < N * 4; i++)
 	{
-		if (clues[i] && !((i < N && clues[i] >= visible_towers_prefix(TTB, 0, top_cond_nb(i), solution))
-			|| (i >= N && i < N * 2 && clues[i] >= visible_towers_prefix(RTL, right_cond_nb(i), 0, solution))
-			|| (i >= N * 2 && i < N * 3 && clues[i] >= visible_towers_prefix(BTT, 0, bottom_cond_nb(i), solution))
-			|| (i >= N * 3 && clues[i] >= visible_towers_prefix(LTR, left_cond_nb(i), 0, solution))))
+		if (!clues[i])
+			continue;
+		Direction way;
+		int line, col;
+		if (i < N) {
+            way = TTB ; line = 0 ; col = top_cond_nb(i);
+		}
+        else if (i < N * 2) {
+            way = RTL ; line = right_cond_nb(i) ; col = 0;
+		}
+        else if (i < N * 3) {
+            way = BTT ; line = 0 ; col = bottom_cond_nb(i);
+		}
+        else {
+            way = LTR ; line = left_cond_nb(i) ; col = 0;
+		}
+		int visible = visible_towers_prefix(way, line, col, solution);
+		int empty_boxes = N - prefix_length(way, line, col, solution);
+		if (clues[i] < visible || clues[i] > visible + empty_boxes)
 			return false;
 	}
 	return true;
