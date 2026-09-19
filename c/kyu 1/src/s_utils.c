@@ -26,7 +26,7 @@ int	rev_nb(int nb)
 //the 4 functions below return the matching position in the clue array
 
 /**
- * @return the position on the right side of a condition
+ * @return the position on the top side of a condition
  */
 int	top_cond_nb(int col)
 {
@@ -302,14 +302,15 @@ int	visible_towers(Direction way, int line, int col, int **solution)
 
 /**
  * @brief
- * Check if there's lacking towers between where line or col is and N
- * 
+ * Check that every remaining box from (line, col) to the edge of the board,
+ * in the given reading direction, is already filled in.
+ *
  * @param way		The reading way, of type @ref Direction
  * @param solution	The array of solution
  * @param line		The line in the `solution`
  * @param col		The column in the `solution`
- * 
- * @return `true` if there's one missing nb, else return `false`
+ *
+ * @return `true` if every box up to the edge is filled, else `false`
  */
 bool	last_boxs_are_filled(Direction way, int **solution, int line, int col)
 {
@@ -342,14 +343,16 @@ bool	last_boxs_are_filled(Direction way, int **solution, int line, int col)
 
 /**
  * @brief
- * Check if there's lacking towers between where line or col is and N
- * 
+ * Check that every box strictly before (line, col) in the given reading
+ * direction — the boxes already passed when scanning from the clue's side —
+ * is still empty.
+ *
  * @param way		The reading way, of type @ref Direction
  * @param solution	The array of solution
  * @param line		The line in the `solution`
  * @param col		The column in the `solution`
- * 
- * @return `true` if there's one missing nb, else return `false`
+ *
+ * @return `true` if every box before (line, col) is still empty, else `false`
  */
 bool	last_boxs_arent_filled(Direction way, int **solution, int line, int col)
 {
@@ -432,6 +435,12 @@ void	init_availability(int available_nbs[N][N][N])
 	}
 }
 
+/**
+ * @brief
+ * Allocate an empty `N` by `N` solution grid, every box set to 0.
+ *
+ * @return a newly allocated grid, to be freed with @ref free_array2
+ */
 int	**init_solution(void)
 {
 	int **solution = calloc(sizeof(int *), N);
@@ -501,7 +510,7 @@ void	free_array2(int **arr2)
 	free(arr2);
 }
 
-/* compare results of SolvePouzzle output with expected solution */
+/* compare results of SolvePuzzle output with expected solution */
 bool compare_solution(int **solution, int expected[N][N])
 {
     if (!solution)

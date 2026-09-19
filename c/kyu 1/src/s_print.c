@@ -1,5 +1,17 @@
 #include "skyscraper.h"
 
+/**
+ * @brief
+ * Print the solver's result grid, surrounded by the clues.
+ *
+ * Each cell is colorized green if it matches `wrapper_array` at the same
+ * position, red otherwise. Prints "(null)" instead of a grid if `array` is
+ * NULL or empty.
+ *
+ * @param array           the solution returned by the solver
+ * @param wrapper_array   a wrapped 2D array to compare each cell against
+ * @param clues           the array of clues surrounding the board
+ */
 void print_answer_array(int **array, int **wrapper_array, int clues[N * 4])
 {
 	fprintf(stderr, CYAN UNDERLINE"got :\n"RESET);

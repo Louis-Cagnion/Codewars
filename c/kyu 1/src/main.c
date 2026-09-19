@@ -2,6 +2,15 @@
 
 int (*expe)[N];
 
+/**
+ * @brief
+ * Parse a space-separated list of clues from a CLI argument.
+ *
+ * @param str   the raw argument string
+ * @param clues Output: the parsed clues, filled in on success
+ *
+ * @return `true` if exactly `N * 4` valid numbers were parsed, else `false`
+ */
 bool parse_clues(char *str, int clues[N * 4])
 {
     int count = 0;

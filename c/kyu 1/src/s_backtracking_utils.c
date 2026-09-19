@@ -40,6 +40,17 @@ void	empty_box_coords(int **solution, int available_nbs[N][N][N], int *line, int
 	*col = best_col;
 }
 
+/**
+ * @brief
+ * Find the highest value still available for a box, no higher than `start`.
+ *
+ * @param available_nbs The array of possible numbers
+ * @param line          The line in `available_nbs`
+ * @param col           The column in `available_nbs`
+ * @param start         The highest value to consider (inclusive)
+ *
+ * @return the highest available value `<= start`, or 0 if none is available
+ */
 int highest_available(int available_nbs[N][N][N], int line, int col, int start)
 {
 	for (int nb = start; nb > 0; nb--)
@@ -48,6 +59,13 @@ int highest_available(int available_nbs[N][N][N], int line, int col, int start)
 	return 0;
 }
 
+/**
+ * @brief
+ * Copy every box of `solution` into `solution_dup`.
+ *
+ * @param solution_dup The destination grid, already allocated
+ * @param solution     The source grid
+ */
 void sol_dup(int **solution_dup, int **solution)
 {
 	for (int line = 0; line < N; line++)
@@ -55,6 +73,13 @@ void sol_dup(int **solution_dup, int **solution)
 			solution_dup[line][col] = solution[line][col];
 }
 
+/**
+ * @brief
+ * Copy every entry of `available_nbs` into `available_nbs_dup`.
+ *
+ * @param available_nbs_dup The destination array
+ * @param available_nbs     The source array
+ */
 void available_dup(int available_nbs_dup[N][N][N], int available_nbs[N][N][N])
 {
 	for (int nb = 0; nb < N; nb++)
@@ -95,6 +120,19 @@ bool	prefix_respects_clues(int *clues, int **solution)
 	return true;
 }
 
+/**
+ * @brief
+ * Check that a fully filled solution grid matches every clue exactly.
+ *
+ * Unlike @ref prefix_respects_clues, this requires the grid to be complete:
+ * it computes the real visible-tower count for each clue's line or column
+ * (see @ref visible_towers) and compares it to the clue's value.
+ *
+ * @param clues    The array of clues
+ * @param solution The (fully filled) solution grid
+ *
+ * @return `true` if every clue matches, else `false`
+ */
 bool	clues_respected(int *clues, int **solution)
 {
 	for (int i = 0; i < N * 4; i++)
@@ -108,6 +146,14 @@ bool	clues_respected(int *clues, int **solution)
 	return true;
 }
 
+/**
+ * @brief
+ * Check whether a solution grid still has at least one empty box.
+ *
+ * @param solution The solution grid
+ *
+ * @return `true` if at least one box is still empty, else `false`
+ */
 bool empty_box(int **solution)
 {
 	for (int line = N - 1; line >= 0; line--)

@@ -1,5 +1,17 @@
 #include "skyscraper.h"
 
+/**
+ * @brief
+ * Handle a top or right clue whose opposite (bottom or left) clue sums with
+ * it to `N + 1`. When that holds, the tallest tower (N) must sit at the
+ * intersection line/column implied by the two clue values, and gets placed
+ * there directly.
+ *
+ * @param cur_clue      The index of the current (top or right) clue
+ * @param available_nbs The array of possible numbers
+ * @param solution      The solution grid
+ * @param clues         The array of clues
+ */
 void	opposite_clues(int cur_clue, int available_nbs[N][N][N], int **solution, int *clues)
 {
 	int f_clue = clues[cur_clue], s_clue, line = 0, col = 0;
@@ -22,15 +34,13 @@ void	opposite_clues(int cur_clue, int available_nbs[N][N][N], int **solution, in
 
 /**
  * @brief
- * Handle a clue equal to N by placing all numbers in ascending order
- * along the corresponding line or column.
- *
- * Also applies additional constraints related to clue 2 if applicable.
+ * Handle a clue equal to 1 by placing the tallest tower (N) right next to
+ * that clue, since a visibility of 1 means the very first box already
+ * blocks the view of everything behind it.
  *
  * @param cur_clue       The index of the current clue
  * @param available_nbs the array of possible numbers
  * @param solution      The solution grid
- * @param clues         The array of clues
  */
 void	actualise_min_clue(int cur_clue, int available_nbs[N][N][N], int **solution)
 {
@@ -48,15 +58,14 @@ void	actualise_min_clue(int cur_clue, int available_nbs[N][N][N], int **solution
 
 /**
  * @brief
- * Handle a clue equal to N by placing all numbers in ascending order
- * along the corresponding line or column.
- *
- * Also applies additional constraints related to clue 2 if applicable.
+ * Handle a clue equal to N by placing every tower along the corresponding
+ * line or column in the only order that makes all N of them visible:
+ * ascending from the clue's side (1 first) if it starts at box value 1,
+ * descending (N first) if it starts at box value N.
  *
  * @param cur_clue       The index of the current clue
  * @param available_nbs the array of possible numbers
  * @param solution      The solution grid
- * @param clues         The array of clues
  */
 void	actualise_max_clue(int cur_clue, int available_nbs[N][N][N], int **solution)
 {
@@ -86,6 +95,16 @@ void	actualise_max_clue(int cur_clue, int available_nbs[N][N][N], int **solution
 	}
 }
 
+/**
+ * @brief
+ * For every non-zero clue, eliminate the tower values that would make it
+ * impossible to reach that clue's visibility count from its side — a tower
+ * placed too early and too tall would block the view of enough towers
+ * behind it that the required count could never be reached.
+ *
+ * @param available_nbs The array of possible numbers
+ * @param clues         The array of clues
+ */
 void	reduce_possibilities_from_clues(int available_nbs[N][N][N], int *clues)
 {
 	int	limit;
@@ -147,6 +166,18 @@ void	reduce_possibilities_from_clues(int available_nbs[N][N][N], int *clues)
 	}
 }
 
+/**
+ * @brief
+ * Apply every deterministic deduction that can be made directly from the
+ * clues, before any guessing starts: eliminate impossible values on every
+ * clued line/column, place the full ascending/descending run for clues
+ * equal to N, place the tallest tower next to clues equal to 1, and place
+ * it at the crossroads of opposite top/right clues that sum to N + 1.
+ *
+ * @param available_nbs The array of possible numbers
+ * @param solution      The solution grid
+ * @param clues         The array of clues
+ */
 void    put_towers_deduced(int available_nbs[N][N][N], int **solution, int *clues)
 {
 	reduce_possibilities_from_clues(available_nbs, clues);
