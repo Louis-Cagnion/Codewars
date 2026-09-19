@@ -65,7 +65,7 @@ void	actualise_max_clue(int cur_clue, int available_nbs[N][N][N], int **solution
 	int nbs[4] = {1, N, N, 1};//starting number
 	int cur_clues[4] = {top_cond_nb(cur_clue), right_cond_nb(cur_clue), bottom_cond_nb(cur_clue), left_cond_nb(cur_clue)};// the clue position on a line (0 to N - 1)
 
-	const int i = (nbs[way] == 0) ? 1 : -1;
+	const int i = (nbs[way] == 1) ? 1 : -1;
 	// if the clue is on a column
 	if (way == 0 || way == 2)
 	{
@@ -153,10 +153,10 @@ void    put_towers_deduced(int available_nbs[N][N][N], int **solution, int *clue
 	for (int i = 0; i < N * 4; i++)
 	{
 		if (clues[i] == N)//if max clue found, put every tower in ascending order from the clue
-			actualise_max_clue(clues[i], available_nbs, solution);
+			actualise_max_clue(i, available_nbs, solution);
 		else if (clues[i] == 1)//if min clue found, put N close to the clue
-			actualise_min_clue(clues[i], available_nbs, solution);
+			actualise_min_clue(i, available_nbs, solution);
 		else if (i < N * 2)//if 2 opposites clues = N + 1, N is at the crossroads of both clues
-			opposite_clues(clues[i], available_nbs, solution, clues);
+			opposite_clues(i, available_nbs, solution, clues);
 	}
 }

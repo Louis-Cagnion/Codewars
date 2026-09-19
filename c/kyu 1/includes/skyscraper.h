@@ -88,7 +88,8 @@ int		**backtracking_solve(int available_nbs[N][N][N], int **solution, int *clues
 bool	empty_box(int **solution);
 void	sol_dup(int **solution_dup, int **solution);
 bool	clues_respected(int *clues, int **solution);
-void	empty_box_coords(int **solution, int *line, int *col);
+bool	prefix_respects_clues(int *clues, int **solution);
+void	empty_box_coords(int **solution, int available_nbs[N][N][N], int *line, int *col);
 void	available_dup(int available_nbs_dup[N][N][N], int available_nbs[N][N][N]);
 int		highest_available(int available_nbs[N][N][N], int line, int col, int start);
 
@@ -134,5 +135,6 @@ int		**wrapped_array(int static_array[N][N]);
 void	init_availability(int available_nbs[N][N][N]);
 bool	compare_solution(int **solution, int expected[N][N]);
 int		visible_towers(Direction way, int line, int col, int **solution);
+int		visible_towers_prefix(Direction way, int line, int col, int **solution);
 
 #endif

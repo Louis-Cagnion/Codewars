@@ -166,6 +166,77 @@ int	empty_boxes_until_N(Direction way, int line, int col, int **solution)
 
 /**
  * @brief
+ * Count the visible towers on the filled prefix of a line or column, starting
+ * from the clue's side and stopping at the first empty box encountered.
+ *
+ * Unlike @ref visible_towers, this does not require the tallest tower (N) to
+ * have been placed yet: it only counts records among the boxes already
+ * filled, ignoring anything past the first gap. Because a filled prefix can
+ * only gain new records as more boxes get filled, the returned count is a
+ * valid lower bound of the final visible count for that line or column —
+ * safe to use for pruning a partial solution against a clue before it is
+ * fully filled.
+ *
+ * @param way		The reading way, of type @ref Direction
+ * @param solution	The array of solution
+ * @param line		The line in the `solution`
+ * @param col		The column in the `solution`
+ *
+ * @return the amount of visible towers among the filled prefix
+ */
+int	visible_towers_prefix(Direction way, int line, int col, int **solution)
+{
+	int towers_recorded = 0;
+	int prev_tower = 0;
+	if (way == LTR)
+	{
+		for (col = 0; col < N && solution[line][col]; col++)
+		{
+			if (solution[line][col] && prev_tower < solution[line][col])
+			{
+				towers_recorded++;
+				prev_tower = solution[line][col];
+			}
+		}
+	}
+	else if (way == RTL)
+	{
+		for (col = N - 1; col >= 0 && solution[line][col]; col--)
+		{
+			if (solution[line][col] && prev_tower < solution[line][col])
+			{
+				towers_recorded++;
+				prev_tower = solution[line][col];
+			}
+		}
+	}
+	else if (way == TTB)
+	{
+		for (line = 0; line < N && solution[line][col]; line++)
+		{
+			if (solution[line][col] && prev_tower < solution[line][col])
+			{
+				towers_recorded++;
+				prev_tower = solution[line][col];
+			}
+		}
+	}
+	else
+	{
+		for (line = N - 1; line >= 0 && solution[line][col]; line--)
+		{
+			if (solution[line][col] && prev_tower < solution[line][col])
+			{
+				towers_recorded++;
+				prev_tower = solution[line][col];
+			}
+		}
+	}
+	return (towers_recorded);
+}
+
+/**
+ * @brief
  * Check how much towers are visible until N, empty boxes are not considered visible
  * 
  * @param way		The reading way, of type @ref Direction
