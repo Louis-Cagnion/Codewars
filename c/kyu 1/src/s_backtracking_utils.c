@@ -11,7 +11,7 @@ void	empty_box_coords(int **solution, int *line, int *col)
 	*col = *line = -1;
 }
 
-int lowest_available(int available_nbs[N][N][N], int line, int col, int start)
+int highest_available(int available_nbs[N][N][N], int line, int col, int start)
 {
 	for (int nb = start; nb > 0; nb--)
 		if (available_nbs[nb - 1][line][col])

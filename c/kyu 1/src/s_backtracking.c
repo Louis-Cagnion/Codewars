@@ -33,7 +33,7 @@ int	**backtracking_solve(int available_nbs[N][N][N], int **solution, int *clues,
 	{
 		sol_dup(solution_dup, solution);//dup solution
 		available_dup(available_nbs_dup, available_nbs);//dup avaiable nbs
-		nb_try = lowest_available(available_nbs, line, col, nb_try - 1);//get numbers to try, if no numbers are available, return NULL
+		nb_try = highest_available(available_nbs, line, col, nb_try - 1);//get numbers to try, if no numbers are available, return NULL
 		if (!nb_try)
 			break;
 		set_valid_pos(nb_try, line, col, available_nbs_dup, solution_dup);//i put the number in the dup solution and change the dup avaiable numbers accordingly

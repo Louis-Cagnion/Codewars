@@ -90,7 +90,7 @@ void	sol_dup(int **solution_dup, int **solution);
 bool	clues_respected(int *clues, int **solution);
 void	empty_box_coords(int **solution, int *line, int *col);
 void	available_dup(int available_nbs_dup[N][N][N], int available_nbs[N][N][N]);
-int		lowest_available(int available_nbs[N][N][N], int line, int col, int start);
+int		highest_available(int available_nbs[N][N][N], int line, int col, int start);
 
 //─────────────────────────────
 // Deduction
